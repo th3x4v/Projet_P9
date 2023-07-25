@@ -1,0 +1,41 @@
+{% extends 'LITReviews/base.html' %}
+
+{% block content %}
+<h2>ABONNNEMENTS:</h2>
+
+<form method="POST" action="{% url 'subscription' %}">
+    {% csrf_token %}
+    <label for="search">Search for users:</label>
+    <input type="text" id="search" name="search" required>
+    <button type="submit">Search</button>
+  </form>
+  
+  {% if search_users %}
+    <h2>Search Results:</h2>
+    <ul>
+      {% for user in search_users %}
+        <li>
+          {{ user.username }}
+          <form method="POST" action="{% url 'follow-user' %}">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" value="{{ user.id }}">
+            <button type="submit">Follow</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+{% if followers %}
+    <h2>Abonnements:</h2>
+    <ul>
+      {% for user in followers %}
+        <li>
+          {{ user.followed_user.username }}
+        </li>
+        {% endfor %}
+    <ul>
+{% endif %}
+
+
+{% endblock %}

@@ -29,7 +29,7 @@ def register_view(request):
         # Save the user object
         user.save()
 
-        return redirect('login') 
+        return redirect('home') 
 
     return render(request, 'accounts/register.html')
 
@@ -37,6 +37,4 @@ def logout_view(request):
     logout(request)
     return redirect('home')
 
-def home_view(request):
-    return render(request, 'accounts/home.html')
 

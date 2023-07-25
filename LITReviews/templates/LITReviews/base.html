@@ -1,0 +1,29 @@
+{% load static %}
+<html>
+
+<head>
+    <title>{% block title %}{% endblock title %}</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'LITReviews/styles.css' %}">
+</head>
+  <header>
+    <h1>Welcome to LITReviews</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="#">Flux</a></li>
+      <li><a href="#">Post</a></li>
+      <li><a href="{% url 'subscription' %}">Abonnement</a></li>
+      {% if request.user.is_authenticated %}
+      <li><a href="{% url 'logout' %}">Logout</a></li>
+      {% else %}
+      <li> <a href="{% url 'login' %}">Please log in to access this page</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+
+  <body>
+    {% block content %}{% endblock content %}
+</body>
+</html>

@@ -1,42 +1,33 @@
 
 from django.shortcuts import render
-from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import redirect
 from accounts.models import User
+from LITReviews.models import UserFollows
 
-
-def login_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            error_message = 'Invalid username or password'
-    else:
-        error_message = ''
-    return render(request, 'LITReviews/login.html', {'error_message': error_message})
-
-def register_view(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        # Create a new user object
-        user = User.objects.create_user(username=username, password=password)
-        # Save the user object
-        user.save()
-
-        return redirect('login') 
-
-    return render(request, 'LITReviews/register.html')
-
-def logout_view(request):
-    logout(request)
-    return redirect('home')
 
 def home_view(request):
     return render(request, 'LITReviews/home.html')
 
+def subscription_view(request):
+    user= request.user
+    followers = UserFollows.objects.filter(user=user.id)
+    if request.method == 'POST':
+        search_query = request.POST.get('search')
+        #search_users = User.objects.filter(username__icontains=search_query)
+        search_users = User.objects.filter(username__icontains=search_query).exclude(id__in=followers.values('followed_user')).exclude(id=user.id)
+        return render(request, 'LITReviews/subscription.html', {'search_users': search_users, 'followers': followers})
+
+    return render(request, 'LITReviews/subscription.html', {'followers': followers})
+
+def follow_user(request):
+    users = User.objects.all()
+    if request.method == 'POST':
+        user= request.user
+        user_id = int(request.POST.get('user_id'))
+        user_follows = UserFollows.objects.create(user=request.user, followed_user=users[user_id-1])
+        user_follows.save()
+        followers = UserFollows.objects.filter(user=user.id)
+        print('debug')
+        print(followers)
+        # Redirect back to the subscription page or any other desired page
+        return redirect('subscription')

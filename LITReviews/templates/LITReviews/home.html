@@ -1,27 +1,6 @@
-<html>
+{% extends 'LITReviews/base.html' %}
 
-<head>
-  <title>LITReviews</title>
-  <link rel="stylesheet" type="text/css" href="/static/LITReviews/styles.css">
-</head>
-
-<body>
-  <header>
-    <h1>Welcome to LITReviews</h1>
-  </header>
-
-  <nav>
-    <ul>
-      <li><a href="#">About</a></li>
-      <li><a href="#">Services</a></li>
-      <li><a href="#">Contact</a></li>
-      {% if request.user.is_authenticated %}
-      <li><a href="{% url 'logout' %}">Logout</a></li>
-      {% else %}
-      <li> <a href="{% url 'login' %}">Please log in to access this page</a></li>
-      {% endif %}
-    </ul>
-  </nav>
+{% block content %}
 
   <main>
     <section>
@@ -33,10 +12,9 @@
     </section>
     <section>
       <h2>Login</h2>
-      {% include 'LITReviews/login.html' %}
+      {% include 'accounts/login.html' %}
       {% endif %}
     </section>
   </main>
-</body>
 
-</html>
+  {% endblock %}
