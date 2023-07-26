@@ -10,14 +10,14 @@ def home_view(request):
 
 def subscription_view(request):
     user= request.user
-    followers = UserFollows.objects.filter(user=user.id)
+    followed_users = UserFollows.objects.filter(user=user.id)
+    followers = UserFollows.objects.filter(followed_user=user.id)
     if request.method == 'POST':
         search_query = request.POST.get('search')
-        #search_users = User.objects.filter(username__icontains=search_query)
         search_users = User.objects.filter(username__icontains=search_query).exclude(id__in=followers.values('followed_user')).exclude(id=user.id)
-        return render(request, 'LITReviews/subscription.html', {'search_users': search_users, 'followers': followers})
+        return render(request, 'LITReviews/subscription.html', {'search_users': search_users,'followers': followers, 'followed_users': followed_users})
 
-    return render(request, 'LITReviews/subscription.html', {'followers': followers})
+    return render(request, 'LITReviews/subscription.html', {'followers': followers, 'followed_users': followed_users})
 
 def follow_user(request):
     users = User.objects.all()
@@ -26,8 +26,13 @@ def follow_user(request):
         user_id = int(request.POST.get('user_id'))
         user_follows = UserFollows.objects.create(user=request.user, followed_user=users[user_id-1])
         user_follows.save()
-        followers = UserFollows.objects.filter(user=user.id)
-        print('debug')
-        print(followers)
-        # Redirect back to the subscription page or any other desired page
+        # Redirect back to the subscription page
+        return redirect('subscription')
+
+def unfollow_user(request):
+    if request.method == 'POST':
+        user = request.user
+        user_id = int(request.POST.get('user_id'))
+        UserFollows.objects.filter(user=user, followed_user_id=user_id).delete()
+        # Redirect back to the subscription page
         return redirect('subscription')

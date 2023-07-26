@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from LITReviews.views import home_view, subscription_view, follow_user
+from LITReviews.views import home_view, subscription_view, follow_user, unfollow_user
 from accounts.views import login_view, logout_view, register_view
 
 
@@ -29,6 +29,7 @@ urlpatterns = [
     path('LITReviews/home/', home_view, name='home'),
     path('LITReviews/subscription/', subscription_view, name='subscription'),
     path('LITReviews/follow_user/', follow_user, name='follow-user'),
+    path('LITReviews/unfollow_user/', unfollow_user, name='unfollow-user'),
 
     
 
