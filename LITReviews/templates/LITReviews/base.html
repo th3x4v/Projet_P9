@@ -47,6 +47,9 @@
   </header>
 
   <div class="container mt-4">
+    {% if error_message %}
+<div class="alert alert-danger">{{ error_message }}</div>
+{% endif %}
     {% block content %}{% endblock content %}
   </div>
 

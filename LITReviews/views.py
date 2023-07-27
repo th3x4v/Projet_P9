@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from accounts.models import User
 from LITReviews.models import UserFollows, Ticket, Review
 from LITReviews.forms import ReviewForm, TicketForm
+from django.db import IntegrityError
 
 
 def home_view(request):
@@ -9,47 +10,55 @@ def home_view(request):
 
 
 def subscription_view(request):
+    error = False
+    error_message = ""
     user = request.user
     followed_users = UserFollows.objects.filter(user=user.id)
     followers = UserFollows.objects.filter(followed_user=user.id)
+    search_users = None 
     if request.method == "POST":
         search_query = request.POST.get("search")
-        search_users = (
-            User.objects.filter(username__icontains=search_query)
-            .exclude(id__in=followers.values("followed_user"))
-            .exclude(id=user.id)
-        )
-        return render(
-            request,
-            "LITReviews/subscription.html",
-            {
-                "search_users": search_users,
-                "followers": followers,
-                "followed_users": followed_users,
-            },
-        )
+        if search_query:
+            # Search operation
+            search_users = (
+                User.objects.filter(username__icontains=search_query)
+                .exclude(id__in=followed_users.values("followed_user__id"))
+                .exclude(id=user.id)
+            )
+            search_users2 = (
+                User.objects.filter(username__icontains=search_query)
+                .exclude(id__in=followed_users.values("user_id"))
+                .exclude(id=user.id)
+            )
+
+        else:
+            # Follow operation
+            user_id = int(request.POST.get("user_id"))
+            try:
+                followed_user = User.objects.get(id=user_id)
+                user_follows = UserFollows(user=user, followed_user=followed_user)
+                user_follows.save()
+            except User.DoesNotExist:
+                error = True
+                error_message = f"L'utilisateur n'existe pas."
+            except IntegrityError:
+                error = True
+                error_message = f"Vous suivez déjà l'utilisateur {followed_user.username}"
 
     return render(
         request,
         "LITReviews/subscription.html",
-        {"followers": followers, "followed_users": followed_users},
+        {
+            "search_users": search_users,
+            "followers": followers,
+            "followed_users": followed_users,
+            "error": error,
+            "error_message": error_message,
+        },
     )
 
-
 def follow_user(request):
-    users = User.objects.all()
-    if request.method == "POST":
-        user = request.user
-        user_id = int(request.POST.get("user_id"))
-        try : 
-            follow_user = User.object.get(user_id) #ou username pour verifier si le user existe"
-        except User.DoesNotExist:
-            pass #message d'erreur
-        user_follows = UserFollows(user, followed_user)
-        user_follows.save() #faire aussi un try si ce user est deja suivi 
-        # Redirect back to the subscription page
-        return redirect("subscription")
-
+    pass
 
 def unfollow_user(request):
     if request.method == "POST":

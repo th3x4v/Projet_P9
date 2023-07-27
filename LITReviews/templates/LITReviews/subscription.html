@@ -1,6 +1,7 @@
 {% extends 'LITReviews/base.html' %}
 
 {% block content %}
+
 <div class="container">
   <h2>ABONNEMENTS:</h2>
 
@@ -28,7 +29,7 @@
         <tr>
           <td>{{ user.username }}</td>
           <td>
-            <form method="POST" action="{% url 'follow-user' %}">
+            <form method="POST" action="{% url 'subscription' %}">
               {% csrf_token %}
               <input type="hidden" name="user_id" value="{{ user.id }}">
               <button type="submit" class="btn btn-primary">Suivre</button>
