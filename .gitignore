@@ -19,6 +19,8 @@ book/
 # ignore all files
 *.zip
 *.pdf
+*.png
+*.webp
 
 .test/
 test/

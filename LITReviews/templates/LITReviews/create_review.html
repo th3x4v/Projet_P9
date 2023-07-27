@@ -1,0 +1,11 @@
+{% extends 'LITReviews/base.html' %}
+
+{% block content %}
+  <h2>Ecrire une critique</h2>
+
+  <form method="POST" action="{% url 'create-review' ticket.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Créer">
+  </form>
+{% endblock %}

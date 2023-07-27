@@ -1,6 +1,5 @@
 {% load static %}
 <html>
-
 <head>
     <title>{% block title %}{% endblock title %}</title>
   <link rel="stylesheet" type="text/css" href="{% static 'LITReviews/styles.css' %}">
@@ -11,11 +10,11 @@
 
   <nav>
     <ul>
-      <li><a href="{% url 'home' %}">Home</a></li>
-      <li><a href="#">Flux</a></li>
-      <li><a href="#">Post</a></li>
-      <li><a href="{% url 'subscription' %}">Abonnement</a></li>
       {% if request.user.is_authenticated %}
+      <li><a href="{% url 'home' %}">Flux</a></li>
+      <li><a href="{% url 'post' %}"">Post</a></li>
+      <li><a href="{% url 'subscription' %}">Abonnement</a></li>
+      <li><a href="{% url 'create-ticket' %}">Ecrire un ticket</a></li>
       <li><a href="{% url 'logout' %}">Logout</a></li>
       {% else %}
       <li> <a href="{% url 'login' %}">Please log in to access this page</a></li>

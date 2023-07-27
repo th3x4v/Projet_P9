@@ -76,3 +76,31 @@ td {
   width: 100%;
 }
 
+.ticket {
+    border: 1px solid black;
+    padding: 10px;
+    margin: 10px;
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ticket-author {
+    font-weight: bold;
+}
+.ticket-title {
+    font-size: larger;
+    font-weight: bold;
+    font-size: 20px;
+}
+.ticket-description {
+    margin-top: 10px;
+}
+.ticket-image {
+    max-width: 100%;
+}
+.ticket-buttons {
+    text-align: right;
+}

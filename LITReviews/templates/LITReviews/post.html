@@ -1,0 +1,39 @@
+{% extends 'LITReviews/base.html' %}
+
+
+{% block content %}
+  <h2>Mes critiques</h2>
+
+  {% if tickets %}
+
+
+{% for ticket in tickets %}
+<div class="ticket">
+    <p>Vous avez publié un billet</p>
+    <div class="ticket-header">
+        <p class="ticket-author">Ticket - {{ ticket.user.username }}</p>
+        <p class="ticket-date"> Date de publication : {{ ticket.time_created|date:"d/m/Y" }}</p>
+    </div>
+    <div class="ticket-title">
+        <h2>{{ ticket.title }}</h2>
+    </div>
+    <div class="ticket-description">
+        {{ ticket.description }}
+    </div>
+    <div class="ticket-image">
+        {% if ticket.image %}
+            <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}">
+        {% endif %}
+    </div>
+    <div class="ticket-buttons">
+        <a href="/post/{{ ticket.id }}/edit">Modifier</a>
+        <a href="/post/{{ ticket.id }}/delete">Supprimer</a>
+        <a href="{% url 'ticket-detail' ticket.id %}">detail</a>
+        <a href="{% url 'create-review' ticket.id %}">Ecrire une critique sur ce billet</a>
+    </div>
+</div>
+{% endfor %}
+{% else %}
+  <p>No tickets found.</p>
+{% endif %}
+{% endblock %}
