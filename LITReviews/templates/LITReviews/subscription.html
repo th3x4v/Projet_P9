@@ -1,71 +1,89 @@
 {% extends 'LITReviews/base.html' %}
 
 {% block content %}
-<h2>ABONNNEMENTS:</h2>
+<div class="container">
+  <h2>ABONNEMENTS:</h2>
 
-<form method="POST" action="{% url 'subscription' %}">
+  <form method="POST" action="{% url 'subscription' %}">
     {% csrf_token %}
-    <label for="search">Suivre d'autres utilisateurs:</label>
-    <input type="text" id="search" name="search" value="Nom de l'utilisateurs" required onfocus="this.value = '';">
-    <button type="submit">Rechercher</button>
-</form>
+    <div class="form-group">
+      <label for="search">Suivre d'autres utilisateurs:</label>
+      <input type="text" class="form-control" id="search" name="search" value="Nom de l'utilisateurs" required onfocus="this.value = '';">
+    </div>
+    <button type="submit" class="btn btn-primary">Rechercher</button>
+  </form>
 
-<div class="abonnement">
-  {% if search_users %}
-  <h2>Recherche:</h2>
-  <table>
-    <tr>
-      <th>Pseudo</th>
-    </tr>
-    {% for user in search_users %}
-    <tr>
-      <td>{{ user.username }}</td>
-      <td>
-        <form method="POST" action="{% url 'follow-user' %}">
-          {% csrf_token %}
-          <input type="hidden" name="user_id" value="{{ user.id }}">
-          <button type="submit">Suivre</button>
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
-  </table>
-  {% endif %}
+  <div class="abonnement">
+    {% if search_users %}
+    <h2>Recherche:</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Pseudo</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in search_users %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>
+            <form method="POST" action="{% url 'follow-user' %}">
+              {% csrf_token %}
+              <input type="hidden" name="user_id" value="{{ user.id }}">
+              <button type="submit" class="btn btn-primary">Suivre</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
 
-  {% if followed_users %}
-  <h2>Abonnements:</h2>
-  <table>
-    <tr>
-      <th>Pseudo</th>
-    </tr>
-    {% for user in followed_users %}
-    <tr>
-      <td>{{ user.followed_user.username }}</td>
-      <td>
-        <form method="POST" action="{% url 'unfollow-user' %}">
-          {% csrf_token %}
-          <input type="hidden" name="user_id" value="{{ user.followed_user.id }}">
-          <button type="submit">Désabonner</button>
-        </form>
-      </td>
-    </tr>
-    {% endfor %}
-  </table>
-  {% endif %}
+    {% if followed_users %}
+    <h2>Abonnements:</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Pseudo</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in followed_users %}
+        <tr>
+          <td>{{ user.followed_user.username }}</td>
+          <td>
+            <form method="POST" action="{% url 'unfollow-user' %}">
+              {% csrf_token %}
+              <input type="hidden" name="user_id" value="{{ user.followed_user.id }}">
+              <button type="submit" class="btn btn-secondary">Désabonner</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
 
-  {% if followers %}
-  <h2>Abonnés:</h2>
-  <table>
-    <tr>
-      <th>Pseudo</th>
-    </tr>
-    {% for user in followers %}
-    <tr>
-      <td>{{ user.user.username }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-  {% endif %}
+    {% if followers %}
+    <h2>Abonnés:</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Pseudo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in followers %}
+        <tr>
+          <td>{{ user.user.username }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+  </div>
 </div>
 
 {% endblock %}

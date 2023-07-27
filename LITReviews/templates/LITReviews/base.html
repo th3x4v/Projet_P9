@@ -1,28 +1,57 @@
 {% load static %}
+<!DOCTYPE html>
 <html>
+
 <head>
-    <title>{% block title %}{% endblock title %}</title>
+  <title>{% block title %}{% endblock title %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="{% static 'LITReviews/styles.css' %}">
 </head>
+
+<body>
   <header>
-    <h1>Welcome to LITReviews</h1>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="#">LITReviews</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            {% if request.user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">Flux</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'post' %}">Post</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'subscription' %}">Abonnement</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'create-ticket' %}">Ecrire un ticket</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">Please log in to access this page</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
   </header>
 
-  <nav>
-    <ul>
-      {% if request.user.is_authenticated %}
-      <li><a href="{% url 'home' %}">Flux</a></li>
-      <li><a href="{% url 'post' %}"">Post</a></li>
-      <li><a href="{% url 'subscription' %}">Abonnement</a></li>
-      <li><a href="{% url 'create-ticket' %}">Ecrire un ticket</a></li>
-      <li><a href="{% url 'logout' %}">Logout</a></li>
-      {% else %}
-      <li> <a href="{% url 'login' %}">Please log in to access this page</a></li>
-      {% endif %}
-    </ul>
-  </nav>
-
-  <body>
+  <div class="container mt-4">
     {% block content %}{% endblock content %}
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 </body>
+
 </html>
