@@ -1,0 +1,23 @@
+{% extends 'LITReviews/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Modifier la critique</h2>
+  <form method="POST" action="{% url 'modify-review' review.id %}">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="rating">Note (0-5)</label>
+      <input type="number" class="form-control" id="rating" name="rating" min="0" max="5" value="{{ review.rating }}" required>
+    </div>
+    <div class="form-group">
+      <label for="headline">Titre</label>
+      <input type="text" class="form-control" id="headline" name="headline" value="{{ review.headline }}" required>
+    </div>
+    <div class="form-group">
+      <label for="body">Commentaire</label>
+      <textarea class="form-control" id="body" name="body" rows="4">{{ review.body }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Modifier</button>
+  </form>
+</div>
+{% endblock %}

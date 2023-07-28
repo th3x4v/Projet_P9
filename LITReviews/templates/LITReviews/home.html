@@ -6,7 +6,7 @@
     <section>
       {% if request.user.is_authenticated %}
       <p>Welcome, {{ request.user.username }}!</p>
-      <a href="{% url 'create-ticket' %}"><button>Create Ticket</button></a>
+      <a href="{% url 'create-ticket' %}"><button>Ecrire un ticket</button></a>
       {% else %}
       <h2>Register</h2>
       <a href="{% url 'register' %}"><button>Register</button></a>

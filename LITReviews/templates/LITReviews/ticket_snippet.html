@@ -1,0 +1,21 @@
+
+  <div class="container mt-4">
+    <div class="card mb-3">
+      <div class="card-header">
+        <p class="card-author">Ticket - {{ post.user.username }}</p>
+        <p class="card-date">Date de publication: {{ post.time_created|date:"d/m/Y" }}</p>
+      </div>
+      <div class="card-body">
+        <h2 class="card-title">{{ post.title }}</h2>
+        <p class="card-text">{{ post.description }}</p>
+        {% if post.image %}
+          <img src="{{ post.image.url }}" alt="{{ post.title }}" class="card-img-top">
+        {% endif %}
+      </div>
+      <div class="card-footer">
+        <a href="{% url 'modify-ticket' post.id %}"" class="btn btn-primary">Modifier</a>
+        <a href="{% url 'ticket-detail' post.id %}" class="btn btn-secondary">Detail</a>
+        <a href="{% url 'create-review' post.id %}" class="btn btn-success">Ecrire une critique sur ce billet</a>
+      </div>
+    </div>
+  </div>

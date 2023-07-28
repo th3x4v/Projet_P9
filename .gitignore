@@ -22,6 +22,8 @@ book/
 *.png
 *.webp
 
+ticket_images/
+
 .test/
 test/
 .vscode/

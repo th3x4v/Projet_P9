@@ -1,0 +1,11 @@
+{% extends 'LITReviews/base.html' %}
+
+{% block content %}
+
+<h1>Confirmer la suppression</h1>
+<p>Etes-vous sûr de vouloir supprimer le ticket "{{ ticket.title }}"?</p>
+<form method="post" action="{% url 'delete-ticket' ticket.id %}">
+    {% csrf_token %}
+    <input type="submit" value="Supprimer">
+</form>
+{% endblock %}

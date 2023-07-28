@@ -1,0 +1,17 @@
+
+<div class="container mt-4">
+  <div class="card mb-3">
+    <div class="card-header">
+      <p class="card-author">Review - {{ post.user.username }}</p>
+      <p class="card-date">Date de publication: {{ post.time_created|date:"d/m/Y" }}</p>
+    </div>
+    <div class="card-body">
+      <h2 class="card-title">{{ post.headline }}</h2>
+      <p class="card-text">{{ post.body }}</p>
+      <p class="card-rating">Note: {{ post.rating }}</p>
+    </div>
+    <div class="card-footer">
+      <a href="{% url 'modify-review' post.id %}" class="btn btn-primary">Modifier</a>
+    </div>
+  </div>
+</div>

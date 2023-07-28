@@ -1,30 +1,25 @@
 {% extends 'LITReviews/base.html' %}
 
 {% block content %}
-  <h2>Ticket Detail</h2>
-
-  <div class="ticket">
-    <div class="ticket-header">
-      <p class="ticket-author">Ticket - {{ ticket.user.username }}</p>
-      <p class="ticket-date">Date de publication: {{ ticket.time_created|date:"d/m/Y" }}</p>
-    </div>
-    <div class="ticket-title">
-      <h2>{{ ticket.title }}</h2>
-    </div>
-    <div class="ticket-description">
-      {{ ticket.description }}
-    </div>
-    <div class="ticket-image">
-      {% if ticket.image %}
-        <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}">
-    
-      {% endif %}
-    </div>
-    <div class="ticket-buttons">
-        <a href="/post/{{ ticket.id }}/edit">Modifier</a>
-        <a href="/post/{{ ticket.id }}/delete">Supprimer</a>
-        <a href="{% url 'ticket-detail' ticket.id %}">detail</a>
-        <a href="{% url 'create-review' ticket.id %}">Ecrire une critique sur ce billet</a>
+  <div class="container mt-4">
+    <div class="card mb-3">
+      <div class="card-header">
+        <p class="card-author">Ticket - {{ ticket.user.username }}</p>
+        <p class="card-date">Date de publication: {{ ticket.time_created|date:"d/m/Y" }}</p>
+      </div>
+      <div class="card-body">
+        <h2 class="card-title">{{ ticket.title }}</h2>
+        <p class="card-text">{{ ticket.description }}</p>
+        {% if ticket.image %}
+          <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}" class="card-img-top">
+        {% endif %}
+      </div>
+      <div class="card-footer">
+        <a href="{% url 'modify-ticket' ticket.id %}" class="btn btn-primary">Modifier</a>
+        <a href="{% url 'delete-ticket' ticket.id %}" class="btn btn-danger">Supprimer</a>
+        <a href="{% url 'ticket-detail' ticket.id %}" class="btn btn-secondary">Detail</a>
+        <a href="{% url 'create-review' ticket.id %}" class="btn btn-success">Ecrire une critique sur ce billet</a>
+      </div>
     </div>
   </div>
 {% endblock %}

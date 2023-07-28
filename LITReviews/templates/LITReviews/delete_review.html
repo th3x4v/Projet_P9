@@ -1,0 +1,11 @@
+{% extends 'LITReviews/base.html' %}
+
+{% block content %}
+
+<h1>Confirmer la suppression</h1>
+<p>Êtes-vous sûr de vouloir supprimer la critique "{{ review.title }}" ?</p>
+<form method="post" action="{% url 'delete-review' review.id %}">
+    {% csrf_token %}
+    <input type="submit" value="Supprimer">
+</form>
+{% endblock %}

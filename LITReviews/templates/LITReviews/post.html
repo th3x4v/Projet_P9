@@ -1,33 +1,14 @@
 {% extends 'LITReviews/base.html' %}
 
 {% block content %}
-  <div class="container mt-4">
-    <h2>Mes critiques</h2>
+<h2>Mes Posts</h2>
 
-    {% if tickets %}
-      {% for ticket in tickets %}
-        <div class="card mb-3">
-          <div class="card-header">
-            <p class="card-author">Ticket - {{ ticket.user.username }}</p>
-            <p class="card-date">Date de publication: {{ ticket.time_created|date:"d/m/Y" }}</p>
-          </div>
-          <div class="card-body">
-            <h2 class="card-title">{{ ticket.title }}</h2>
-            <p class="card-text">{{ ticket.description }}</p>
-            {% if ticket.image %}
-              <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}" class="card-img-top">
-            {% endif %}
-          </div>
-          <div class="card-footer">
-            <a href="/post/{{ ticket.id }}/edit" class="btn btn-primary">Modifier</a>
-            <a href="/post/{{ ticket.id }}/delete" class="btn btn-danger">Supprimer</a>
-            <a href="{% url 'ticket-detail' ticket.id %}" class="btn btn-secondary">Detail</a>
-            <a href="{% url 'create-review' ticket.id %}" class="btn btn-success">Ecrire une critique sur ce billet</a>
-          </div>
-        </div>
-      {% endfor %}
-    {% else %}
-      <p>No tickets found.</p>
-    {% endif %}
-  </div>
+{% for post in user_posts %}
+{% if post.content_type == 'TICKET' %}
+{% include 'LITReviews/ticket_snippet.html' %}
+{% elif post.content_type == 'REVIEW' %}
+{% include 'LITReviews/review_snippet.html' %}
+{% endif %}
+{% endfor %}
+
 {% endblock %}

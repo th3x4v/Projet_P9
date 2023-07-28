@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from LITReviews.views import home_view, subscription_view, follow_user, unfollow_user, create_ticket, ticket_detail, post_view, create_review
+from LITReviews import views
 from accounts.views import login_view, logout_view, register_view
 
 
@@ -26,13 +26,19 @@ urlpatterns = [
     path('LITReviews/login/', login_view, name='login'),
     path('LITReviews/register/', register_view, name='register'),
     path('logout/', logout_view, name='logout'),
-    path('LITReviews/home/', home_view, name='home'),
-    path('LITReviews/subscription/', subscription_view, name='subscription'),
-    path('LITReviews/follow_user/', follow_user, name='follow-user'),
-    path('LITReviews/unfollow_user/', unfollow_user, name='unfollow-user'),
-    path('LITReviews/create_ticket/', create_ticket, name='create-ticket'),
-    path('LITReviews/post/', post_view, name='post'),
-    path('LITReviews/<int:ticket_id>/create_review/', create_review, name='create-review'),
-    path('LITReviews/<int:ticket_id>/', ticket_detail, name='ticket-detail'),  
+    path('LITReviews/home/', views.home_view, name='home'),
+    path('LITReviews/subscription/', views.subscription_view, name='subscription'),
+    path('LITReviews/unfollow_user/', views.unfollow_user, name='unfollow-user'),
+    path('LITReviews/ticket/create_ticket/', views.create_ticket, name='create-ticket'),
+    path('LITReviews/post/', views.post_view, name='post'),
+    path('LITReviews/ticket/<int:ticket_id>/create_review/', views.create_review, name='create-review'),
+    path('LITReviews/ticket/<int:ticket_id>/', views.ticket_detail, name='ticket-detail'),
+    path('LITReviews/ticket/<int:ticket_id>/change/', views.modify_ticket, name='modify-ticket'), 
+    path('LITReviews/review/<int:review_id>/', views.review_detail, name='review-detail'),
+    path('LITReviews/review/<int:review_id>/change/', views.modify_review, name='modify-review'), 
+    path('LITReviews/review/<int:review_id>/delete/', views.delete_review, name='delete-review'),
+    path('LITReviews/ticket/<int:ticket_id>/delete/', views.delete_ticket, name='delete-ticket'),
 
 ]
+
+
