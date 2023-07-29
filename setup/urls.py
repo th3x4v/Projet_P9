@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path
 from LITReviews import views
 from accounts.views import login_view, logout_view, register_view
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 
@@ -38,7 +40,11 @@ urlpatterns = [
     path('LITReviews/review/<int:review_id>/change/', views.modify_review, name='modify-review'), 
     path('LITReviews/review/<int:review_id>/delete/', views.delete_review, name='delete-review'),
     path('LITReviews/ticket/<int:ticket_id>/delete/', views.delete_ticket, name='delete-ticket'),
+    path('LITReviews/feed/', views.feed, name='feed'),
 
 ]
 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+    document_root=settings.MEDIA_ROOT)
 

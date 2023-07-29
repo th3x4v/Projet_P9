@@ -8,8 +8,13 @@
   <form method="POST" action="{% url 'subscription' %}">
     {% csrf_token %}
     <div class="form-group">
-      <label for="search">Suivre d'autres utilisateurs:</label>
-      <input type="text" class="form-control" id="search" name="search" value="Nom de l'utilisateurs" required onfocus="this.value = '';">
+      <label for="searchs">Suivre d'autres utilisateurs:</label>
+      <input list="searchs" type="text" class="form-control" id="search" name="searchs" value="Nom de l'utilisateurs" required onfocus="this.value = '';">
+      <datalist id="searchs">
+        {% for user in users %}
+        <option value="{{user.username}}"">
+        {% endfor %}
+      </datalist>
     </div>
     <button type="submit" class="btn btn-primary">Rechercher</button>
   </form>

@@ -1,0 +1,15 @@
+{% extends 'LITReviews/base.html' %}
+
+{% block title %}Feed{% endblock title %}
+
+{% block content %}
+<h2>Flux</h2>
+
+{% for post in user_posts %}
+{% if post.content_type == 'TICKET' %}
+{% include 'LITReviews/ticket_snippet.html' %}
+{% elif post.content_type == 'REVIEW' %}
+{% include 'LITReviews/review_snippet.html' %}
+{% endif %}
+{% endfor %}
+{% endblock %}

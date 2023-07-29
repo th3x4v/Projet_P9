@@ -13,6 +13,7 @@
         {% endif %}
       </div>
       <div class="card-footer">
+        <input type="hidden" name="url" value="{{ title}}">
         <a href="{% url 'modify-ticket' post.id %}"" class="btn btn-primary">Modifier</a>
         <a href="{% url 'ticket-detail' post.id %}" class="btn btn-secondary">Detail</a>
         <a href="{% url 'create-review' post.id %}" class="btn btn-success">Ecrire une critique sur ce billet</a>

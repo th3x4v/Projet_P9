@@ -9,6 +9,7 @@
       <h2 class="card-title">{{ post.headline }}</h2>
       <p class="card-text">{{ post.body }}</p>
       <p class="card-rating">Note: {{ post.rating }}</p>
+      {% include 'LITReviews/ticket_snippet.html' %}
     </div>
     <div class="card-footer">
       <a href="{% url 'modify-review' post.id %}" class="btn btn-primary">Modifier</a>

@@ -4,3 +4,7 @@
 }
 
 
+.card-img-top {
+  max-height: 400px;
+  width: auto; /* To maintain the image's aspect ratio */
+}
