@@ -2,21 +2,33 @@
   <div class="container mt-4">
     <div class="card mb-3">
       <div class="card-header">
-        <p class="card-author">Ticket - {{ post.user.username }}</p>
-        <p class="card-date">Date de publication: {{ post.time_created|date:"d/m/Y" }}</p>
+        <p class="card-author">Ticket - {% if ticket.user.username == request.user.username %} Vous {% else %} {{ ticket.user.username }} {% endif %}</p>
+        <p class="card-date">Date de publication: {{ ticket.time_created|date:"d/m/Y" }}</p>
       </div>
       <div class="card-body">
-        <h2 class="card-title">{{ post.title }}</h2>
-        <p class="card-text">{{ post.description }}</p>
-        {% if post.image %}
-          <img src="{{ post.image.url }}" alt="{{ post.title }}" class="card-img-top">
+        <h2 class="card-title">{{ ticket.title }}</h2>
+        <p class="card-text">{{ ticket.description }}</p>
+        {% if ticket.image %}
+          <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}" class="card-img-top">
         {% endif %}
       </div>
       <div class="card-footer">
-        <input type="hidden" name="url" value="{{ title}}">
-        <a href="{% url 'modify-ticket' post.id %}"" class="btn btn-primary">Modifier</a>
-        <a href="{% url 'ticket-detail' post.id %}" class="btn btn-secondary">Detail</a>
-        <a href="{% url 'create-review' post.id %}" class="btn btn-success">Ecrire une critique sur ce billet</a>
+        <input type="hidden" name="url" value="{{title}}">
+        {% if ticket.user.username == request.user.username %}
+        <a href="{% url 'modify-ticket' ticket.id %}"" class="btn btn-primary">Modifier</a>
+        <a href="{% url 'delete-ticket' ticket.id %}" class="btn btn-danger">Supprimer</a>
+        {% else %}
+        <p>Vous n'avez pas les droits pour modifier ou suprimer ce post</p>
+        {% endif %}
+        <a href="{% url 'ticket-detail' ticket.id %}" class="btn btn-secondary">Detail</a>
+        {% for review in user_reviews %}
+        {% if review.ticket_id == ticket.id %}
+        <p>Vous avez déjà publé une critique sur ce billet</p>
+        {% else %}
+        <a href="{% url 'create-review' ticket.id %}" class="btn btn-success">Ecrire une critique sur ce billet</a>
+        {% endif %}
+        {% endfor %}
+
       </div>
     </div>
   </div>

@@ -7,6 +7,7 @@ from django.db.models import Count, CharField, Value
 from itertools import chain
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.sessions.models import Session
 
 
 def home_view(request):
@@ -24,8 +25,6 @@ def subscription_view(request):
     search_users = None
     if request.method == "POST":
         search_query = request.POST.get("searchs")
-        print("debug")
-        print(search_query)
         if search_query:
             # Search operation
             search_users = (
@@ -33,7 +32,6 @@ def subscription_view(request):
                 .exclude(id__in=followed_users.values("followed_user__id"))
                 .exclude(id=user.id)
             )
-
         else:
             # Follow operation
             user_id = int(request.POST.get("user_id"))
@@ -57,7 +55,7 @@ def subscription_view(request):
         "search_users": search_users,
         "followers": followers,
         "followed_users": followed_users,
-        "users":users,
+        "users": users,
         "error": error,
         "error_message": error_message,
     }
@@ -75,8 +73,11 @@ def unfollow_user(request):
     search_users = None
     if request.method == "POST":
         user_id = int(request.POST.get("user_id"))
-        followed_users = UserFollows.objects.filter(user=user.id)
-        if user_id in followed_users:
+
+        followed_user_ids = list(
+            followed_users.values_list("followed_user_id", flat=True)
+        )
+        if user_id in followed_user_ids:
             UserFollows.objects.filter(user=user, followed_user_id=user_id).delete()
         else:
             error = True
@@ -110,7 +111,9 @@ def ticket_detail(request, ticket_id):
     error = False
     error_message = ""
     ticket = Ticket.objects.get(id=ticket_id)
+    ticket_reviews = Review.objects.filter(ticket_id=ticket_id)
     context = {
+        "ticket_reviews":ticket_reviews,
         "ticket": ticket,
         "error": error,
         "error_message": error_message,
@@ -145,34 +148,51 @@ def feed(request):
     )
     feed_user_ids.append(user.id)
 
-    # Filter the tickets created by the user and his followers
-    tickets = Ticket.objects.filter(user__in=feed_user_ids)
+    user_reviews = Review.objects.filter(user=user.id)
 
     user_posts = get_user_posts(feed_user_ids)
 
     return render(
         request,
         "LITReviews/feed.html",
-        {"user_posts": user_posts, "tickets": tickets},
+        {"user_posts": user_posts,"user_reviews": user_reviews}
     )
 
 
 def post_view(request):
     # Get the current user
     user = request.user
-    tickets = Ticket.objects.filter(user=user)
+
+    user_reviews = Review.objects.filter(user=user.id)
 
     user_posts = user_posts = get_user_posts([user.id])
 
     return render(
         request,
         "LITReviews/post.html",
-        {"user_posts": user_posts, "tickets": tickets},
+        {"user_posts": user_posts, "user_reviews": user_reviews},
     )
 
 
 def create_review(request, ticket_id):
+    error = False
+    error_message = ""
+
     ticket = Ticket.objects.get(id=ticket_id)
+
+    ticket_reviews = Review.objects.filter(ticket_id=ticket_id)
+
+    # Check if the current user has already commented this ticket
+    if ticket_id in ticket_reviews:
+        error = True
+        error_message = "Vous avez déja écris un commentaire sur ce billet"
+        context = {
+            "ticket_reviews":ticket_reviews,
+            "ticket": ticket,
+            "error": error,
+            "error_message": error_message,
+        }
+        return render(request, "LITReviews/ticket_detail.html", context)
 
     if request.method == "POST":
         form = ReviewForm(request.POST)

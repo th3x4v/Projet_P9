@@ -13,12 +13,24 @@
         {% if ticket.image %}
           <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}" class="card-img-top">
         {% endif %}
+        {% for review in ticket_reviews %}
+        {% include 'LITReviews/review_snippet.html' %}
+        {% endfor %}
       </div>
       <div class="card-footer">
-        <a href="{% url 'modify-ticket' ticket.id %}" class="btn btn-primary">Modifier</a>
+        {% if ticket.user.username == request.user.username %}
+        <a href="{% url 'modify-ticket' ticket.id %}"" class="btn btn-primary">Modifier</a>
         <a href="{% url 'delete-ticket' ticket.id %}" class="btn btn-danger">Supprimer</a>
-        <a href="{% url 'ticket-detail' ticket.id %}" class="btn btn-secondary">Detail</a>
+        {% else %}
+        <p>Vous n'avez pas les droits pour modifier ou suprimer ce post</p>
+        {% endif %}
+        {% for review in user_reviews %}
+        {% if review.ticket_id == ticket.id %}
+        <p>Vous avez déjà publé une critique sur ce billet</p>
+        {% else %}
         <a href="{% url 'create-review' ticket.id %}" class="btn btn-success">Ecrire une critique sur ce billet</a>
+        {% endif %}
+        {% endfor %}
       </div>
     </div>
   </div>

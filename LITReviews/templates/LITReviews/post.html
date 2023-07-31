@@ -4,11 +4,14 @@
 <h2>Mes Posts</h2>
 
 {% for post in user_posts %}
-{% if post.content_type == 'TICKET' %}
-{% include 'LITReviews/ticket_snippet.html' %}
-{% elif post.content_type == 'REVIEW' %}
-{% include 'LITReviews/review_snippet.html' %}
-{% endif %}
+  {% if post.content_type == 'TICKET' %}
+    {% with ticket=post %}
+      {% include 'LITReviews/ticket_snippet.html' %}
+    {% endwith %}
+  {% elif post.content_type == 'REVIEW' %}
+    {% with review=post %}
+      {% include 'LITReviews/review_snippet.html' %}
+    {% endwith %}
+  {% endif %}
 {% endfor %}
-
 {% endblock %}

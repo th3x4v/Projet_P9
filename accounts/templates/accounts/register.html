@@ -1,3 +1,7 @@
+{% extends 'LITReviews/base.html' %}
+
+{% block content %}
+
 <form method="POST" action="{% url 'register' %}">
     {% csrf_token %}
     <!-- Add your registration form fields here -->
@@ -12,3 +16,5 @@
     <!-- Add any additional form fields here -->
     <input type="submit" value="Register">
 </form>
+
+{% endblock %}
