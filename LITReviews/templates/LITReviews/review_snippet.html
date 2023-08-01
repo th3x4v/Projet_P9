@@ -11,7 +11,15 @@
       <p class="card-rating">Note: {{ review.rating }}</p>
       {% if post.ticket%}
         {% with ticket=post.ticket %}
+        <div class="container mt-4">
+          <div class="card mb-3">
+            <div class="card-header">
+              <p class="card-author"> Ticket - {% if ticket.user.username == request.user.username %} Vous {% else %} {{ ticket.user.username }}{% endif %}</p>
+              <p class="card-date">Date de publication: {{ ticket.time_created|date:"d/m/Y" }}</p>
+            </div>
           {% include 'LITReviews/ticket_snippet.html' %}
+        </div>
+      </div>
         {% endwith %}
       {% endif %}
     </div>

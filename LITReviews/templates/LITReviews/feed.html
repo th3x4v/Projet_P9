@@ -5,10 +5,21 @@
 {% block content %}
 <h2>Flux</h2>
 
+<a href="{% url 'create-ticket' %}" class="btn btn-primary">Demander une critique</a>
+<a href="{% url 'create-review-ticket'%}" class="btn btn-success">Créer une critique</a>
+
 {% for post in user_posts %}
   {% if post.content_type == 'TICKET' %}
-    {% with ticket=post %}
-      {% include 'LITReviews/ticket_snippet.html' %}
+    {% with ticket=post%}
+    <div class="container mt-4">
+        <div class="card mb-3">
+          <div class="card-header">
+            <p class="card-author"> {% if ticket.user.username == request.user.username %} Vous avez {% else %} {{ ticket.user.username }} a {% endif %} demandé une critique </p>
+            <p class="card-date">Date de publication: {{ ticket.time_created|date:"d/m/Y" }}</p>
+          </div>
+        {% include 'LITReviews/ticket_snippet.html' %}
+        </div>
+    </div>
     {% endwith %}
   {% elif post.content_type == 'REVIEW' %}
     {% with review=post %}

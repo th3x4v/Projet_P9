@@ -1,10 +1,4 @@
-
-  <div class="container mt-4">
-    <div class="card mb-3">
-      <div class="card-header">
-        <p class="card-author">Ticket - {% if ticket.user.username == request.user.username %} Vous {% else %} {{ ticket.user.username }} {% endif %}</p>
-        <p class="card-date">Date de publication: {{ ticket.time_created|date:"d/m/Y" }}</p>
-      </div>
+{% load custom_tags %}
       <div class="card-body">
         <h2 class="card-title">{{ ticket.title }}</h2>
         <p class="card-text">{{ ticket.description }}</p>
@@ -14,21 +8,18 @@
       </div>
       <div class="card-footer">
         <input type="hidden" name="url" value="{{title}}">
+        <a href="{% url 'ticket-detail' ticket.id %}" class="btn btn-secondary">Detail</a>
         {% if ticket.user.username == request.user.username %}
         <a href="{% url 'modify-ticket' ticket.id %}"" class="btn btn-primary">Modifier</a>
         <a href="{% url 'delete-ticket' ticket.id %}" class="btn btn-danger">Supprimer</a>
         {% else %}
         <p>Vous n'avez pas les droits pour modifier ou suprimer ce post</p>
         {% endif %}
-        <a href="{% url 'ticket-detail' ticket.id %}" class="btn btn-secondary">Detail</a>
-        {% for review in user_reviews %}
-        {% if review.ticket_id == ticket.id %}
-        <p>Vous avez déjà publé une critique sur ce billet</p>
-        {% else %}
-        <a href="{% url 'create-review' ticket.id %}" class="btn btn-success">Ecrire une critique sur ce billet</a>
-        {% endif %}
-        {% endfor %}
 
+        {% if not ticket|review_exist:request.user %}
+        <a href="{% url 'create-review' ticket.id %}" class="btn btn-success">Ecrire une critique sur ce billet</a>
+    {% endif %}
+
+
+    
       </div>
-    </div>
-  </div>

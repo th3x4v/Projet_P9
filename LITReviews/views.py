@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.sessions.models import Session
 
 
+
 def home_view(request):
     return render(request, "LITReviews/home.html")
 
@@ -106,13 +107,21 @@ def create_ticket(request):
 
     return render(request, "LITReviews/create_ticket.html", {"form": form})
 
+def create_review_ticket(request):
+    pass
+
 
 def ticket_detail(request, ticket_id):
     error = False
     error_message = ""
     ticket = Ticket.objects.get(id=ticket_id)
     ticket_reviews = Review.objects.filter(ticket_id=ticket_id)
+    if Review.objects.filter(ticket=ticket, user=request.user).exists():
+        review_exist = True
+    else:
+        review_exist = False
     context = {
+        "review_exist":review_exist,
         "ticket_reviews":ticket_reviews,
         "ticket": ticket,
         "error": error,
@@ -152,10 +161,13 @@ def feed(request):
 
     user_posts = get_user_posts(feed_user_ids)
 
+    # Initialize the review_exist variable
+    review_exist = False
+
     return render(
         request,
         "LITReviews/feed.html",
-        {"user_posts": user_posts,"user_reviews": user_reviews}
+        {"user_posts": user_posts,"user_reviews": user_reviews, "review_exist":review_exist,}
     )
 
 
@@ -165,12 +177,15 @@ def post_view(request):
 
     user_reviews = Review.objects.filter(user=user.id)
 
-    user_posts = user_posts = get_user_posts([user.id])
+    user_posts = get_user_posts([user.id])
+
+    # Initialize the review_exist variable
+    review_exist = False
 
     return render(
         request,
         "LITReviews/post.html",
-        {"user_posts": user_posts, "user_reviews": user_reviews},
+        {"user_posts": user_posts, "user_reviews": user_reviews, "review_exist":review_exist,},
     )
 
 
