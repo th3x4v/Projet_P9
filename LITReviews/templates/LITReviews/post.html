@@ -8,6 +8,7 @@
 
 {% for post in user_posts %}
   {% if post.content_type == 'TICKET' %}
+  {% if post not in review_without_ticket %}
     {% with ticket=post %}
     <div class="container mt-4">
         <div class="card mb-3">
@@ -19,6 +20,7 @@
         </div>
     </div>
     {% endwith %}
+    {% endif %}
   {% elif post.content_type == 'REVIEW' %}
     {% with review=post %}
       {% include 'LITReviews/review_snippet.html' %}

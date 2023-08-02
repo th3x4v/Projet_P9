@@ -41,7 +41,7 @@ urlpatterns = [
     path('LITReviews/review/<int:review_id>/delete/', views.delete_review, name='delete-review'),
     path('LITReviews/ticket/<int:ticket_id>/delete/', views.delete_ticket, name='delete-ticket'),
     path('LITReviews/feed/', views.feed, name='feed'),
-    path('LITReviews/ticket/create_review_ticket/', views.create_review_ticket, name='create-review-ticket'),
+    path('LITReviews/create_review_ticket/', views.create_review_ticket, name='create-review-ticket'),
 
 
 ]

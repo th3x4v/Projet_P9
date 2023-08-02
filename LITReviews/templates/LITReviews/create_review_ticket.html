@@ -1,0 +1,16 @@
+{% extends 'LITReviews/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+
+  <div class="container mt-4">
+    <h2>Ecrire une critique</h2>
+    <form method="POST" action="{% url 'create-review-ticket' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      {% crispy form %}
+    </form>
+  </div>
+{% endblock %}
+
+

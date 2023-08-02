@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from accounts.models import User
 from LITReviews.models import UserFollows, Ticket, Review
-from LITReviews.forms import ReviewForm, TicketForm
+from LITReviews.forms import ReviewForm, TicketForm, ReviewTicketForm
 from django.db import IntegrityError
 from django.db.models import Count, CharField, Value
 from itertools import chain
@@ -101,14 +101,26 @@ def create_ticket(request):
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.save()
-            return redirect("home")
+            return redirect("post")
     else:
         form = TicketForm()
 
     return render(request, "LITReviews/create_ticket.html", {"form": form})
 
 def create_review_ticket(request):
-    pass
+    if request.method == 'POST':
+        form = ReviewTicketForm(request.POST, request.FILES)
+        if form.is_valid():
+            ticket, review = form.make_review_ticket()
+            ticket.user = request.user
+            ticket.save()
+            review.user = request.user
+            review.save()
+            return redirect("post")
+    else:
+        form = ReviewTicketForm()
+
+    return render(request, "LITReviews/create_review_ticket.html", {"form": form})
 
 
 def ticket_detail(request, ticket_id):
@@ -164,10 +176,16 @@ def feed(request):
     # Initialize the review_exist variable
     review_exist = False
 
+    #check the review without ticket
+    review_without_ticket = check_review_without_ticket(user_posts)
+
+    context = {"user_posts": user_posts,"user_reviews": user_reviews, "review_exist":review_exist,"review_without_ticket":review_without_ticket}
+
+
     return render(
         request,
         "LITReviews/feed.html",
-        {"user_posts": user_posts,"user_reviews": user_reviews, "review_exist":review_exist,}
+        context
     )
 
 
@@ -182,12 +200,25 @@ def post_view(request):
     # Initialize the review_exist variable
     review_exist = False
 
+     #check the review without ticket
+    review_without_ticket = check_review_without_ticket(user_posts)
+
+    context = {"user_posts": user_posts,"user_reviews": user_reviews, "review_exist":review_exist,"review_without_ticket":review_without_ticket}
+
+
     return render(
         request,
         "LITReviews/post.html",
-        {"user_posts": user_posts, "user_reviews": user_reviews, "review_exist":review_exist,},
+        context,
     )
 
+def check_review_without_ticket(user_posts):
+    review_without_ticket = []
+    for i in range(len(user_posts)):
+        if i + 1 < len(user_posts) and user_posts[i].content_type == 'REVIEW':
+                if  user_posts[i].ticket == user_posts[i+1] and user_posts[i].user==user_posts[i+1].user and user_posts[i].time_created.strftime("%d/%m/%Y %H:%M")==user_posts[i+1].time_created.strftime("%d/%m/%Y %H:%M"):
+                    review_without_ticket.append(user_posts[i+1])
+    return review_without_ticket
 
 def create_review(request, ticket_id):
     error = False

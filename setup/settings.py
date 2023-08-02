@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'accounts',
     'LITReviews',
     'crispy_forms',
+    'crispy_bootstrap4',
 ]
 
 MIDDLEWARE = [
@@ -129,4 +130,5 @@ MEDIA_URL = 'ticket_images/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CRISPY_TEMPLATE_PACK = 'uni_form'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
