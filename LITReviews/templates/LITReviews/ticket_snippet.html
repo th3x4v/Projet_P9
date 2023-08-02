@@ -1,25 +1,27 @@
 {% load custom_tags %}
-      <div class="card-body">
-        <h2 class="card-title">{{ ticket.title }}</h2>
-        <p class="card-text">{{ ticket.description }}</p>
-        {% if ticket.image %}
-          <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}" class="card-img-top">
-        {% endif %}
-      </div>
-      <div class="card-footer">
-        <input type="hidden" name="url" value="{{title}}">
-        <a href="{% url 'ticket-detail' ticket.id %}" class="btn btn-secondary">Detail</a>
-        {% if ticket.user.username == request.user.username %}
-        <a href="{% url 'modify-ticket' ticket.id %}"" class="btn btn-primary">Modifier</a>
-        <a href="{% url 'delete-ticket' ticket.id %}" class="btn btn-danger">Supprimer</a>
-        {% else %}
-        <p>Vous n'avez pas les droits pour modifier ou suprimer ce post</p>
-        {% endif %}
+<div class="card-body">
+  <h2 class="card-title">{{ ticket.title }}</h2>
+  <p class="card-text">{{ ticket.description }}</p>
+  {% if ticket.image %}
+  <img src="{{ ticket.image.url }}" alt="{{ ticket.title }}" class="card-img-top">
+  {% endif %}
+</div>
+<div class="card-footer">
+  <input type="hidden" name="url" value="{{title}}">
+  <a href="{% url 'ticket-detail' ticket.id %}" class="btn btn-secondary">Detail</a>
+  {% if ticket.user.username == request.user.username %}
+  <a href="{% url 'modify-ticket' ticket.id %}"" class=" btn btn-primary">Modifier</a>
+  <a href="{% url 'delete-ticket' ticket.id %}" class="btn btn-danger">Supprimer</a>
+  {% else %}
+  <p>Vous n'avez pas les droits pour modifier ou suprimer ce post</p>
+  {% endif %}
 
-        {% if not ticket|review_exist:request.user %}
-        <a href="{% url 'create-review' ticket.id %}" class="btn btn-success">Ecrire une critique sur ce billet</a>
-    {% endif %}
+  {% if not ticket|review_exist:request.user %}
 
 
-    
-      </div>
+  <a href="{% url 'create-review' ticket.id %}" class="btn btn-success">Ecrire une critique sur ce billet</a>
+  {% endif %}
+
+
+
+</div>

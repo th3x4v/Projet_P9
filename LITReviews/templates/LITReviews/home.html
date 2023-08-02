@@ -2,25 +2,24 @@
 
 {% block content %}
 
-  <main class="container">
-    <section class="row">
-      {% if request.user.is_authenticated %}
-      <div class="col-md-6">
-        <p>Welcome, {{ request.user.username }}!</p>
-        <a href="{% url 'create-ticket' %}" class="btn btn-primary">Ecrire un ticket</a>
-      </div>
-      {% else %}
-      <div class="col-md-6">
-        <h2>Register</h2>
-        <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
-      </div>
-      <div class="col-md-6">
-        <h2>Login</h2>
-        {% include 'accounts/login.html' %}
-      </div>
-    </section>
-      {% endif %}
+<main class="container">
+  <section class="row">
+    {% if request.user.is_authenticated %}
+    <div class="col-md-6">
+      <p>Welcome, {{ request.user.username }}!</p>
+    </div>
+    {% else %}
+    <div class="col-md-6">
+      <h2>Register</h2>
+      <a href="{% url 'register' %}" class="btn btn-primary">Register</a>
+    </div>
+    <div class="col-md-6">
+      <h2>Login</h2>
+      {% include 'accounts/login.html' %}
+    </div>
+  </section>
+  {% endif %}
 
-  </main>
+</main>
 
 {% endblock %}

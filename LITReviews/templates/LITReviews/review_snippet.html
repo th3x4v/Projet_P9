@@ -1,4 +1,4 @@
-
+{% load custom_tags %}
 <div class="container mt-4">
   <div class="card mb-3">
     <div class="card-header">
@@ -6,9 +6,19 @@
       <p class="card-date">Date de publication: {{ review.time_created|date:"d/m/Y" }}</p>
     </div>
     <div class="card-body">
-      <h2 class="card-title">{{ review.headline }}</h2>
+      <h2 class="card-title">{{ review.headline }} </span>-        -</span>  
+          <span class="star-rating"> {% with rating=review.rating|stars %}
+          {% for i in rating %}
+            {% if i == 1 %}
+              <i class="bi bi-star-fill"></i>
+              {% else %}
+              <i class="bi bi-star"></i>
+              {% endif %}
+          {% endfor %}
+          {% endwith %}
+        </span>
+      </h2> 
       <p class="card-text">{{ review.body }}</p>
-      <p class="card-rating">Note: {{ review.rating }}</p>
       {% if post.ticket%}
         {% with ticket=post.ticket %}
         <div class="container mt-4">

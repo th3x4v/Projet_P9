@@ -10,13 +10,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.sessions.models import Session
 
 
-
 def home_view(request):
     return render(request, "LITReviews/home.html")
 
 
+@login_required
 def subscription_view(request):
-    """Renders the subscription page and handles the follow and search operations."""
+    """Renders the subscription page and handles the follow and search operations"""
     error = False
     error_message = ""
     user = request.user
@@ -64,6 +64,7 @@ def subscription_view(request):
     return render(request, "LITReviews/subscription.html", context)
 
 
+@login_required
 def unfollow_user(request):
     """Handles the unfollow operation for a user"""
     error = False
@@ -94,7 +95,9 @@ def unfollow_user(request):
     return render(request, "LITReviews/subscription.html", context)
 
 
+@login_required
 def create_ticket(request):
+    """Creates a new ticket"""
     if request.method == "POST":
         form = TicketForm(request.POST, request.FILES)
         if form.is_valid():
@@ -107,8 +110,11 @@ def create_ticket(request):
 
     return render(request, "LITReviews/create_ticket.html", {"form": form})
 
+
+@login_required
 def create_review_ticket(request):
-    if request.method == 'POST':
+    """Creates a new ticket and a review at the same time"""
+    if request.method == "POST":
         form = ReviewTicketForm(request.POST, request.FILES)
         if form.is_valid():
             ticket, review = form.make_review_ticket()
@@ -123,7 +129,9 @@ def create_review_ticket(request):
     return render(request, "LITReviews/create_review_ticket.html", {"form": form})
 
 
+@login_required
 def ticket_detail(request, ticket_id):
+    """Renders the ticket detail page"""
     error = False
     error_message = ""
     ticket = Ticket.objects.get(id=ticket_id)
@@ -133,8 +141,8 @@ def ticket_detail(request, ticket_id):
     else:
         review_exist = False
     context = {
-        "review_exist":review_exist,
-        "ticket_reviews":ticket_reviews,
+        "review_exist": review_exist,
+        "ticket_reviews": ticket_reviews,
         "ticket": ticket,
         "error": error,
         "error_message": error_message,
@@ -142,26 +150,12 @@ def ticket_detail(request, ticket_id):
     return render(request, "LITReviews/ticket_detail.html", context)
 
 
-def get_user_posts(users):
-    # Get the tickets created by the user
-    user_tickets = Ticket.objects.filter(user__in=users)
-    user_tickets = user_tickets.annotate(content_type=Value("TICKET", CharField()))
-    # Get the reviews written by the user
-    user_reviews = Review.objects.filter(user__in=users)
-    user_reviews = user_reviews.annotate(content_type=Value("REVIEW", CharField()))
-
-    # Combine the tickets and reviews using the chain function
-    user_posts = sorted(
-        chain(user_tickets, user_reviews),
-        key=lambda post: post.time_created,
-        reverse=True,
-    )
-
-    return user_posts
-
-
+@login_required
 def feed(request):
+    """Renders the feed page"""
     user = request.user
+    # Get the tickets created by the user
+    user_tickets = Ticket.objects.filter(user=user)
 
     # Get the IDs of the users that the current user follows and the current user
     feed_user_ids = list(
@@ -169,42 +163,66 @@ def feed(request):
     )
     feed_user_ids.append(user.id)
 
-    user_reviews = Review.objects.filter(user=user.id)
-
-    user_posts = get_user_posts(feed_user_ids)
-
-    # Initialize the review_exist variable
-    review_exist = False
-
-    #check the review without ticket
-    review_without_ticket = check_review_without_ticket(user_posts)
-
-    context = {"user_posts": user_posts,"user_reviews": user_reviews, "review_exist":review_exist,"review_without_ticket":review_without_ticket}
-
-
-    return render(
-        request,
-        "LITReviews/feed.html",
-        context
+    # Get the id of the ticket reviewed by a user not followed by the current user
+    No_followers_ticket_id = list(
+        Review.objects.filter(ticket__in=user_tickets)
+        .exclude(user__in=feed_user_ids)
+        .values_list("ticket_id", flat=True)
     )
-
-
-def post_view(request):
-    # Get the current user
-    user = request.user
-
-    user_reviews = Review.objects.filter(user=user.id)
-
-    user_posts = get_user_posts([user.id])
-
-    # Initialize the review_exist variable
-    review_exist = False
-
-     #check the review without ticket
+    # Get the tickets created by the user and the followed users
+    user_tickets_feed = Ticket.objects.filter(user_id__in=feed_user_ids)
+    user_tickets_feed = user_tickets.annotate(content_type=Value("TICKET", CharField()))
+    # Get the reviews written by the user and by the not followed the current user
+    user_reviews_feed = Review.objects.filter(user_id__in=feed_user_ids)
+    user_reviews_not_followed_feed = Review.objects.filter(
+        ticket_id__in=No_followers_ticket_id
+    )
+    user_reviews_feed = user_reviews_feed.annotate(
+        content_type=Value("REVIEW", CharField())
+    )
+    user_reviews_not_followed_feed = user_reviews_not_followed_feed.annotate(
+        content_type=Value("REVIEW", CharField())
+    )
+    # Combine the tickets and reviews using the chain function to create the feed
+    user_posts = sorted(
+        chain(user_tickets_feed, user_reviews_feed, user_reviews_not_followed_feed),
+        key=lambda post: post.time_created,
+        reverse=True,
+    )
+    # check the review without created with no inital ticket
     review_without_ticket = check_review_without_ticket(user_posts)
 
-    context = {"user_posts": user_posts,"user_reviews": user_reviews, "review_exist":review_exist,"review_without_ticket":review_without_ticket}
+    context = {
+        "user_posts": user_posts,
+        "review_without_ticket": review_without_ticket,
+    }
 
+    return render(request, "LITReviews/feed.html", context)
+
+
+@login_required
+def post_view(request):
+    """Renders post page of the user"""
+    user = request.user
+    # Get the tickets created by the user
+    user_tickets = Ticket.objects.filter(user=user)
+    user_tickets = user_tickets.annotate(content_type=Value("TICKET", CharField()))
+    # Get the reviews written by the user
+    user_reviews = Review.objects.filter(user=user)
+    user_reviews = user_reviews.annotate(content_type=Value("REVIEW", CharField()))
+    # Combine the tickets and reviews using the chain function
+    user_posts = sorted(
+        chain(user_tickets, user_reviews),
+        key=lambda post: post.time_created,
+        reverse=True,
+    )
+    # check the review created with no initial ticket
+    review_without_ticket = check_review_without_ticket(user_posts)
+
+    context = {
+        "user_posts": user_posts,
+        "review_without_ticket": review_without_ticket,
+    }
 
     return render(
         request,
@@ -212,18 +230,27 @@ def post_view(request):
         context,
     )
 
+
 def check_review_without_ticket(user_posts):
+    """check if the review is created no in a ticket answer"""
     review_without_ticket = []
     for i in range(len(user_posts)):
-        if i + 1 < len(user_posts) and user_posts[i].content_type == 'REVIEW':
-                if  user_posts[i].ticket == user_posts[i+1] and user_posts[i].user==user_posts[i+1].user and user_posts[i].time_created.strftime("%d/%m/%Y %H:%M")==user_posts[i+1].time_created.strftime("%d/%m/%Y %H:%M"):
-                    review_without_ticket.append(user_posts[i+1])
+        if i + 1 < len(user_posts) and user_posts[i].content_type == "REVIEW":
+            if (
+                user_posts[i].ticket == user_posts[i + 1]
+                and user_posts[i].user == user_posts[i + 1].user
+                and user_posts[i].time_created.strftime("%d/%m/%Y %H:%M")
+                == user_posts[i + 1].time_created.strftime("%d/%m/%Y %H:%M")
+            ):
+                review_without_ticket.append(user_posts[i + 1])
     return review_without_ticket
 
+
+@login_required
 def create_review(request, ticket_id):
+    """create a review"""
     error = False
     error_message = ""
-
     ticket = Ticket.objects.get(id=ticket_id)
 
     ticket_reviews = Review.objects.filter(ticket_id=ticket_id)
@@ -233,7 +260,7 @@ def create_review(request, ticket_id):
         error = True
         error_message = "Vous avez déja écris un commentaire sur ce billet"
         context = {
-            "ticket_reviews":ticket_reviews,
+            "ticket_reviews": ticket_reviews,
             "ticket": ticket,
             "error": error,
             "error_message": error_message,
@@ -258,6 +285,7 @@ def create_review(request, ticket_id):
 
 @login_required
 def modify_ticket(request, ticket_id):
+    """Modifiy a ticket"""
     error = False
     error_message = ""
     ticket = Ticket.objects.get(id=ticket_id)
@@ -286,6 +314,7 @@ def modify_ticket(request, ticket_id):
     return render(request, "LITReviews/modify_ticket.html", context)
 
 
+@login_required
 def review_detail(request, review_id):
     review = Review.objects.get(id=review_id)
     return render(request, "LITReviews/review_detail.html", {"review": review})
@@ -293,6 +322,7 @@ def review_detail(request, review_id):
 
 @login_required
 def modify_review(request, review_id):
+    """Modifiy a review"""
     error = False
     error_message = ""
     review = Review.objects.get(id=review_id)
@@ -323,6 +353,7 @@ def modify_review(request, review_id):
 
 @login_required
 def delete_review(request, review_id):
+    """Delete a review"""
     error = False
     error_message = ""
     try:
@@ -358,6 +389,7 @@ def delete_review(request, review_id):
 
 @login_required
 def delete_ticket(request, ticket_id):
+    """Delete a ticket"""
     error = False
     error_message = ""
     try:

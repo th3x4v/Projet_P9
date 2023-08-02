@@ -8,3 +8,11 @@
   max-height: 400px;
   width: auto; /* To maintain the image's aspect ratio */
 }
+
+.lead {
+  float: left; 
+  margin-left: 20px;
+  padding-bottom: 50px;
+
+}
+
