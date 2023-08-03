@@ -16,3 +16,13 @@
 
 }
 
+#div_id_rating{
+  display: flex;
+  margin-bottom: 40px;
+}
+#div_id_rating div{
+  display: inline-flex;
+  margin-right: 50px;
+  margin-left: 10px;
+}
+

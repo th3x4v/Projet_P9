@@ -1,0 +1,18 @@
+{% load custom_tags %}
+<div class="card-footer">
+    <input type="hidden" name="url" value="{{title}}">
+    <a href="{% url 'ticket-detail' ticket.id %}" class="btn btn-secondary">Detail</a>
+    {% if ticket.user.username == request.user.username %}
+    <a href="{% url 'modify-ticket' ticket.id %}"" class=" btn btn-primary">Modifier</a>
+    <a href="{% url 'delete-ticket' ticket.id %}" class="btn btn-danger">Supprimer</a>
+    {% endif %}
+
+    {% if not ticket|review_exist:request.user %}
+
+
+    <a href="{% url 'create-review' ticket.id %}" class="btn btn-success">Ecrire une critique sur ce billet</a>
+    {% endif %}
+
+
+
+</div>

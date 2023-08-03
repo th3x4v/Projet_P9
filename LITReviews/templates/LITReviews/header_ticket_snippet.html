@@ -1,0 +1,7 @@
+<div class="container mt-4">
+    <div class="card mb-3">
+        <div class="card-header">
+            <p class="card-author"> {% if ticket.user.username == request.user.username %} Vous avez {% else %}
+                {{ticket.user.username }} a {% endif %} demandé une critique </p>
+            <p class="card-date">Date de publication: {{ ticket.time_created|date:"d/m/Y" }}</p>
+        </div>

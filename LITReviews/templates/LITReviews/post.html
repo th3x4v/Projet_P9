@@ -7,24 +7,20 @@
 <a href="{% url 'create-review-ticket'%}" class="btn btn-success">Créer une critique</a>
 
 {% for post in user_posts %}
-  {% if post.content_type == 'TICKET' %}
-  {% if post not in review_without_ticket %}
-    {% with ticket=post %}
-    <div class="container mt-4">
-        <div class="card mb-3">
-          <div class="card-header">
-            <p class="card-author"> {% if ticket.user.username == request.user.username %} Vous avez {% else %} {{ ticket.user.username }} a {% endif %} demandé une critique </p>
-            <p class="card-date">Date de publication: {{ ticket.time_created|date:"d/m/Y" }}</p>
-          </div>
-        {% include 'LITReviews/ticket_snippet.html' %}
-        </div>
-    </div>
-    {% endwith %}
-    {% endif %}
-  {% elif post.content_type == 'REVIEW' %}
-    {% with review=post %}
-      {% include 'LITReviews/review_snippet.html' %}
-    {% endwith %}
-  {% endif %}
+{% if post.content_type == 'TICKET' %}
+{% if post not in review_without_ticket %}
+{% with ticket=post %}
+{% include 'LITReviews/header_ticket_snippet.html' %}
+{% include 'LITReviews/ticket_snippet.html' %}
+{% include 'LITReviews/footer_ticket_snippet.html' %}
+</div>
+</div>
+{% endwith %}
+{% endif %}
+{% elif post.content_type == 'REVIEW' %}
+{% with review=post %}
+{% include 'LITReviews/review_snippet.html' %}
+{% endwith %}
+{% endif %}
 {% endfor %}
 {% endblock %}

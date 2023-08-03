@@ -1,9 +1,11 @@
 from django import forms
+from django.forms import RadioSelect
 from LITReviews.models import Review
 from LITReviews.models import Ticket
 from django.core.validators import MinValueValidator, MaxValueValidator
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit
+from crispy_forms.layout import Submit
+from crispy_forms.bootstrap import InlineRadios
 from django.urls import reverse_lazy
 
 
@@ -30,6 +32,15 @@ class TicketForm(forms.ModelForm):
 
 
 class ReviewForm(forms.ModelForm):
+    rating = forms.ChoiceField(
+        choices=[(int(i), int(i)) for i in range(1, 6)],
+        widget=RadioSelect,
+    )
+    headline = forms.CharField(max_length=128)
+    body = forms.CharField(
+        max_length=8192, widget=forms.Textarea(attrs={"rows": 4}), required=False
+    )
+
     class Meta:
         model = Review
         fields = ["rating", "headline", "body"]
@@ -40,8 +51,11 @@ class ReviewForm(forms.ModelForm):
 
         # Set custom labels for the fields
         self.fields["rating"].label = "Note:"
-        self.fields["headline"].label = "Titre:"
+        self.fields["headline"].label = "Titre de la critique:"
         self.fields["body"].label = "Commentaire:"
+
+        self.helper.form_action = reverse_lazy("post")
+        self.helper.add_input(Submit("Envoyer", "Envoyer"))
 
 
 class ReviewTicketForm(forms.ModelForm):

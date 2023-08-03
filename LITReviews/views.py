@@ -185,7 +185,9 @@ def feed(request):
     )
     # Get the tickets created by the user and the followed users
     user_tickets_feed = Ticket.objects.filter(user_id__in=feed_user_ids)
-    user_tickets_feed = user_tickets.annotate(content_type=Value("TICKET", CharField()))
+    user_tickets_feed = user_tickets_feed.annotate(
+        content_type=Value("TICKET", CharField())
+    )
     # Get the reviews written by the user and by the not followed the current user
     user_reviews_feed = Review.objects.filter(user_id__in=feed_user_ids)
     user_reviews_not_followed_feed = Review.objects.filter(
@@ -199,7 +201,7 @@ def feed(request):
     )
     # Combine the tickets and reviews using the chain function to create the feed
     user_posts = sorted(
-        chain(user_tickets_feed, user_reviews_feed, user_reviews_not_followed_feed),
+        chain(user_tickets_feed, user_reviews_feed),
         key=lambda post: post.time_created,
         reverse=True,
     )
