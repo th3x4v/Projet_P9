@@ -5,7 +5,6 @@ from LITReviews.models import Ticket
 from django.core.validators import MinValueValidator, MaxValueValidator
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
-from crispy_forms.bootstrap import InlineRadios
 from django.urls import reverse_lazy
 
 

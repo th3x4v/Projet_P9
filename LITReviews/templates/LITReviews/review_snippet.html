@@ -37,8 +37,6 @@
       {% if review.user.username == request.user.username %}
       <a href="{% url 'modify-review' review.id %}" class="btn btn-primary">Modifier</a>
       <a href="{% url 'delete-review' review.id %}" class="btn btn-danger">Supprimer</a>
-      {% else %}
-      <p>Vous n'avez pas les droits pour modifier ou suprimer ce post</p>
       {% endif %}
 
     </div>

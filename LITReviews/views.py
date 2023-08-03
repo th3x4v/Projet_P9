@@ -5,9 +5,7 @@ from LITReviews.forms import ReviewForm, TicketForm, ReviewTicketForm
 from django.db import IntegrityError
 from django.db.models import Count, CharField, Value
 from itertools import chain
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.sessions.models import Session
 
 
 def home_view(request):
@@ -64,7 +62,7 @@ def subscription_view(request):
             except IntegrityError:
                 error = True
                 error_message = (
-                    f"Vous suivez déjà l'utilisateur {followed_user.username}"
+                    f"Vous suivez déjà l'utilisateur {followed_user.username!r}"
                 )
     context = {
         "search_users": search_users,
@@ -201,7 +199,7 @@ def feed(request):
     )
     # Combine the tickets and reviews using the chain function to create the feed
     user_posts = sorted(
-        chain(user_tickets_feed, user_reviews_feed),
+        chain(user_tickets_feed, user_reviews_feed, user_reviews_not_followed_feed),
         key=lambda post: post.time_created,
         reverse=True,
     )
@@ -290,7 +288,7 @@ def create_review(request, ticket_id):
             review.ticket = ticket
             review.user = request.user
             review.save()
-            return redirect("home")
+            return redirect("post")
     else:
         form = ReviewForm()
 

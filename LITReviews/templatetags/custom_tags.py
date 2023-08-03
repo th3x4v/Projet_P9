@@ -1,5 +1,5 @@
 from django import template
-from LITReviews.models import Review, Ticket
+from LITReviews.models import Review
 
 register = template.Library()
 
