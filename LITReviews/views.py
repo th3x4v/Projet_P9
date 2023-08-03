@@ -21,8 +21,12 @@ def subscription_view(request):
     error_message = ""
     user = request.user
     followed_users = UserFollows.objects.filter(user=user.id)
+    followed_users_id = UserFollows.objects.filter(user=user.id).values(
+        "followed_user__id"
+    )
     followers = UserFollows.objects.filter(followed_user=user.id)
-    users = User.objects.all()
+    users_to_follow = User.objects.exclude(id__in=followed_users_id).exclude(id=user.id)
+
     search_users = None
     if request.method == "POST":
         search_query = request.POST.get("searchs")
@@ -36,6 +40,16 @@ def subscription_view(request):
         else:
             # Follow operation
             user_id = int(request.POST.get("user_id"))
+            search_users_string = request.POST.get("search_users")
+            usernames = [
+                name.split(":")[1].strip(" >")
+                for name in search_users_string.strip("<QuerySet [")
+                .strip("]>")
+                .split(",")
+            ]
+            search_users = User.objects.filter(username__in=usernames).exclude(
+                id=user_id
+            )
             try:
                 followed_user = User.objects.get(id=user_id)
                 if user == followed_user:
@@ -56,7 +70,7 @@ def subscription_view(request):
         "search_users": search_users,
         "followers": followers,
         "followed_users": followed_users,
-        "users": users,
+        "users_to_follow": users_to_follow,
         "error": error,
         "error_message": error_message,
     }
