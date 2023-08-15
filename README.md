@@ -23,14 +23,14 @@ git clone https://github.com/th3x4v/Projet_P9.git
 ```
 Placez vous dans le dossier Projet_P9, puis créez un nouvel environnement virtuel:
 ```
-python -m venv venv
+python3 -m venv venv
 ```
 Ensuite, activez-le.
 Windows:
 ```
 venv\scripts\activate.bat
 ```
-Linux:
+Linux/MAC:
 ```
 source venv/bin/activate
 ```
