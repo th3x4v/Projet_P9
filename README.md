@@ -1,4 +1,4 @@
-# Openclassroom Projet 04
+# Openclassroom Projet 09
 Projet réalisé dans le cadre de ma formation OpenClassrooms Développeur d'Applications Python.  
 Il s'agit d'une application web réalisée avec Django pour une société fictive, LitReviews.  
 L'application est un réseau social permettant de demander et poster des critiques de livres.
