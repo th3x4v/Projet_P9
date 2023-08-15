@@ -48,8 +48,9 @@
     </table>
     {% endif %}
 
-    {% if followed_users %}
     <h2>Abonnements:</h2>
+    {% if followed_users %}
+
     <table class="table">
       <thead>
         <tr>
@@ -72,10 +73,12 @@
         {% endfor %}
       </tbody>
     </table>
+    {% else %}
+    <p>Vous ne suivez aucun utilisateur</p>
     {% endif %}
 
-    {% if followers %}
     <h2>Abonnés:</h2>
+    {% if followers %}
     <table class="table">
       <thead>
         <tr>
@@ -90,6 +93,8 @@
         {% endfor %}
       </tbody>
     </table>
+    {% else %}
+    <p>Vous n'avez pas d'abonnés</p>
     {% endif %}
   </div>
 </div>

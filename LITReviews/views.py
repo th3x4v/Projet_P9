@@ -3,7 +3,7 @@ from accounts.models import User
 from LITReviews.models import UserFollows, Ticket, Review
 from LITReviews.forms import ReviewForm, TicketForm, ReviewTicketForm
 from django.db import IntegrityError
-from django.db.models import Count, CharField, Value
+from django.db.models import CharField, Value
 from itertools import chain
 from django.contrib.auth.decorators import login_required
 
@@ -58,7 +58,7 @@ def subscription_view(request):
                     user_follows.save()
             except User.DoesNotExist:
                 error = True
-                error_message = f"L'utilisateur n'existe pas."
+                error_message = "L'utilisateur n'existe pas."
             except IntegrityError:
                 error = True
                 error_message = (
@@ -95,7 +95,7 @@ def unfollow_user(request):
             UserFollows.objects.filter(user=user, followed_user_id=user_id).delete()
         else:
             error = True
-            error_message = f"Vous ne suivez pas cet utilisateur"
+            error_message = "Vous ne suivez pas cet utilisateur"
     context = {
         "search_users": search_users,
         "followers": followers,
@@ -305,7 +305,7 @@ def modify_ticket(request, ticket_id):
     ticket = Ticket.objects.get(id=ticket_id)
 
     # Check if the current user is the writer of the ticket or a superuser
-    if ticket.user != ticket.user and not request.user.is_superuser:
+    if ticket.user != request.user and not request.user.is_superuser:
         error = True
         error_message = "Vous n'êtes pas autorisé(e) à modifier ce billet"
         context = {

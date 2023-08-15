@@ -38,14 +38,6 @@ Installez ensuite les packages requis:
 ```
 pip install -r requirements.txt
 ```
-Ensuite, placez vous à la racine du projet (là ou se trouve le fichier manage.py), puis effectuez les migrations:
-```
-python manage.py makemigrations
-```
-Puis: 
-```
-python manage.py migrate
-```
 Il ne vous reste plus qu'à lancer le serveur: 
 ```
 python manage.py runserver
@@ -54,3 +46,22 @@ Vous pouvez ensuite utiliser l'applicaton à l'adresse suivante:
 ```
 http://127.0.0.1:8000/LITReviews/home/
 ```
+## Test
+### Django administration
+
+Identifiant : **xavier** | Mot de passe : **openclassroom**
+
+&rarr; http://127.0.0.1:8000/admin/
+
+### Liste des utilisateurs existants
+
+| *Identifiant* | *Mot de passe* |
+|---------------|----------------|
+| User1         | 123456789      |
+| User2         | 123456789      |
+| User3         | 123456789      |
+| User4         | 123456789      |
+| User5         | 123456789      |
+| openclassroom | 123456789      |
+| Victor        | 123456789      |
+

@@ -1,4 +1,4 @@
-.card-header{
+.card-header {
   display: flex;
   justify-content: space-between;
 }
@@ -6,23 +6,28 @@
 
 .card-img-top {
   max-height: 400px;
-  width: auto; /* To maintain the image's aspect ratio */
+  width: auto;
+  /* To maintain the image's aspect ratio */
 }
 
 .lead {
-  float: left; 
+  float: left;
   margin-left: 20px;
   padding-bottom: 50px;
 
 }
 
-#div_id_rating{
+#div_id_rating {
   display: flex;
   margin-bottom: 40px;
 }
-#div_id_rating div{
+
+#div_id_rating div {
   display: inline-flex;
   margin-right: 50px;
   margin-left: 10px;
 }
 
+body {
+  background-color: #ccc;
+}
